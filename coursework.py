@@ -1,9 +1,8 @@
-#import MySQLdb 
+import MySQLdb
 import os
 import sys
 import math
 import getpass
-import string
 
 class Mysql:
 	
@@ -15,17 +14,33 @@ class Mysql:
 		user = Student(username,firstName,secondName) #new object called user, with the information of the student. Needs work, will use a query to find the username specified and return values dependant on what it finds.
 		return user
 	
-	
-	"""self.connect = MySQLdb.connect(	host = "localhost", # SQL Open a connection, lovely stuff, can't do on a windows atm, waiting for later.
-	                                user = "06williamsona",
-	                                passwd = "cat",
-	                                db = "06williamsona")
-					
-	self.cursor = self.connect.cursor() #Cursor required to query le server
-	
+	def __init__(self):
+		
+		try:
+			self.connect = MySQLdb.connect(	
+
+			host = "localhost", # SQL Open a connection, lovely stuff, can't do on a windows atm, waiting for later.
+	        user = "06williamsona",
+	        #passwd = "cat",
+	        db = "06williamsona" )
+
+		except MySQLdb.Error, e: 	
+			print "Error %d: %s" % (e.args[0], e.args[1])
+			#return -1
+     		#sys.exit (1)
+     	
+     	if(self.connect()):
+			try:
+				self.cursor = self.connect.cursor() #Cursor required to query le server
+			except MySQLdb.Error, e: 
+				print "Error %d: %s" % (e.args[0], e.args[1])
+			#return -1
+		
+		#return 1
+			
 	def run(self,queryinfo): #A method which would run queries for me, so i could have done mysql().run(BLARGH)
 		self.cursor.execute(queryinfo)
-	"""
+	
 	
 	
 class Student: #Student Class to hold all of the selected users information.
@@ -35,24 +50,28 @@ class Student: #Student Class to hold all of the selected users information.
 		self.firstName = firstName
 		self.secondName = secondName
 	
-
 def login(): #function for getting initial login information from the user
 	
-	username = raw_input("Username: ") #Initial call for information
+	if(Mysql()):
+
+		username = raw_input("Username: ") #Initial call for information
 	#if(username == null):
 #		print "You haven't entered anything for your username"
-	password = getpass.getpass()
+		password = getpass.getpass()
 	#if(password == null):
 #		print "You haven't entered anything for your username"
 		
 	#password = getpass.getpass(prompt="Password: ")
 	
-	while checkUser(username,password) < 1: #Well if it's wrong, we've got to do it again, and i don't fancy recursion.
-		username = raw_input("Please enter your username: ")
-		password = getpass.getpass()
-	else: #Well, if it's not less than 1 it must be right! so lets say they've logged in and pass it onto a function to get some more information to fill up out Student Object
-		print "Thankyou for logging into the School's Merit System, "+username
-		getMoreInfo(username,password)
+		while checkUser(username,password) < 1: #Well if it's wrong, we've got to do it again, and i don't fancy recursion.
+			username = raw_input("Please enter your username: ")
+			password = getpass.getpass()
+		else: #Well, if it's not less than 1 it must be right! so lets say they've logged in and pass it onto a function to get some more information to fill up out Student Object
+			print "Thankyou for logging into the School's Merit System, "+username
+			getMoreInfo(username,password)
+
+	else:
+		sys.exit(1)
 		
 def getMoreInfo(username,password): #It takes the username and password, the beginning information from the login method
 	firstName = raw_input("What is your firstName? ") #Assigns firstName and secondName to some raw_inputs
@@ -84,6 +103,15 @@ def checkUser(username,password): # function responsible for just checking the i
 	else:
 		print "You have invalid characters within your username and/or password, please try again."
 		return -1
+
+def exit():
+	print "Thankyou for using the school system"
+	if(Mysql.cursor.close()): #Close the cursor object
+		print "Cursor Closed"
+	if(Mysql.connect.close()): #Close the mysql conenction
+		print "Connection Closed"
+	if(Mysql.commit()):
+		print "Changes commited to the database"
 	
 login() #Initial call to the function, as i always do!
 
