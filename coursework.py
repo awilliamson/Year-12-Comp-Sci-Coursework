@@ -45,7 +45,7 @@ class Mysql:
 	
 class Student: #Student Class to hold all of the selected users information.
 	
-	def __init__(self,username,firstName,secondName): #Init method automaticallu invoked when creating a new class object/instance
+	def __init__(self,username,firstName,secondName): #Init method automatically invoked when creating a new class object/instance
 		self.username = username #So define all my local variables, and attribs which i can access later via the object name from mysql which was user, then .the atrrib.
 		self.firstName = firstName
 		self.secondName = secondName
