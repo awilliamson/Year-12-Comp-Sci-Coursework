@@ -17,62 +17,25 @@ class Mysql:
 	def __init__(self):
 		
 		try:
-			self.connect = MySQLdb.connect(	
-
-			host = "localhost", # SQL Open a connection, lovely stuff, can't do on a windows atm, waiting for later.
-	        user = "06williamsona",
-	        #passwd = "cat",
-	        db = "06williamsona" )
+			self.connect = MySQLdb.connect(host = "localhost",user = "06williamsona", passwd = "cat",db = "06williamsona" )
+	        self.cursor = self.connect.cursor() #Cursor required to query le server
 
 		except MySQLdb.Error, e: 	
 			print "Error %d: %s" % (e.args[0], e.args[1])
 			#return -1
      		#sys.exit (1)
-     	
-     	if(self.connect()):
-			try:
-				self.cursor = self.connect.cursor() #Cursor required to query le server
-			except MySQLdb.Error, e: 
-				print "Error %d: %s" % (e.args[0], e.args[1])
-			#return -1
-		
-		#return 1
 			
 	def run(self,queryinfo): #A method which would run queries for me, so i could have done mysql().run(BLARGH)
 		self.cursor.execute(queryinfo)
 	
 	
 	
-class Student: #Student Class to hold all of the selected users information.
-	
+class Student: #Student Class to hold all of the selected users information.	
 	def __init__(self,username,firstName,secondName): #Init method automatically invoked when creating a new class object/instance
 		self.username = username #So define all my local variables, and attribs which i can access later via the object name from mysql which was user, then .the atrrib.
 		self.firstName = firstName
 		self.secondName = secondName
 	
-def login(): #function for getting initial login information from the user
-	
-	if(Mysql()):
-
-		username = raw_input("Username: ") #Initial call for information
-	#if(username == null):
-#		print "You haven't entered anything for your username"
-		password = getpass.getpass()
-	#if(password == null):
-#		print "You haven't entered anything for your username"
-		
-	#password = getpass.getpass(prompt="Password: ")
-	
-		while checkUser(username,password) < 1: #Well if it's wrong, we've got to do it again, and i don't fancy recursion.
-			username = raw_input("Please enter your username: ")
-			password = getpass.getpass()
-		else: #Well, if it's not less than 1 it must be right! so lets say they've logged in and pass it onto a function to get some more information to fill up out Student Object
-			print "Thankyou for logging into the School's Merit System, "+username
-			getMoreInfo(username,password)
-
-	else:
-		sys.exit(1)
-		
 def getMoreInfo(username,password): #It takes the username and password, the beginning information from the login method
 	firstName = raw_input("What is your firstName? ") #Assigns firstName and secondName to some raw_inputs
 	secondName = raw_input("What is your secondName? ")
@@ -106,16 +69,27 @@ def checkUser(username,password): # function responsible for just checking the i
 
 def exit():
 	print "Thankyou for using the school system"
-	if(Mysql.cursor.close()): #Close the cursor object
-		print "Cursor Closed"
-	if(Mysql.connect.close()): #Close the mysql conenction
-		print "Connection Closed"
-	if(Mysql.commit()):
+	if(MysqlObj.commit()):
 		print "Changes commited to the database"
+	if(MysqlObj.cursor.close()): #Close the cursor object
+		print "Cursor Closed"
+	if(MysqlObj.connect.close()): #Close the mysql conenction
+		print "Connection Closed"
 	
-login() #Initial call to the function, as i always do!
 
-#Random crap when testing attrib iterations
+
+mysqlObj = mysql()
+
+if(mysqlObj):
+	invalid = True
+	while invalid = True
+		username = raw_input("Username: ") #Initial call for information
+		password = getpass.getpass()
+		if checkUser(username, password)
+			invalid = False
+	## CHECKS OUT, DO SOME MORE STUFF
+
+
 """v ={"username":"Username: {}", "firstname":"Firstname: {}", "secondname":"Second name: {}"}
 
 
